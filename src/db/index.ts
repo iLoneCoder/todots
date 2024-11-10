@@ -28,12 +28,13 @@ import Board from "./models/board.model";
 import Card from "./models/card.model";
 import BoardColumn from "./models/board_column.model";
 import User from "./models/user.model";
+import CardComment from "./models/card_comment.model";
 
-console.log("base connection")
 Board.associate()
 Card.associate()
 BoardColumn.associate()
 User.associate()
+CardComment.associate()
 
 export {
     Board,

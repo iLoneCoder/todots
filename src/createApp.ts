@@ -5,7 +5,6 @@ import boardRouter from "./routes/boards.routes"
 import cardRouter from "./routes/card.routes"
 import boardColumnRouter from "./routes/boardcolumn.routes"
 
-
 export default function createApp() {
     dotenv.config()
     

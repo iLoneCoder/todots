@@ -3,6 +3,7 @@ import sequelize from "../sequelize";
 import Board from "./board.model";
 import BoardColumn from "./board_column.model";
 import User from "./user.model";
+import CardComment from "./card_comment.model";
 
 class Card extends Model {
     declare id: number
@@ -13,17 +14,20 @@ class Card extends Model {
     declare Board?: Board
     declare BoardColumn?: BoardColumn
     declare User?: User
+    declare CardComments?: CardComment[]
 
     static associations: {
         Board: Association<Card, Board>;
         BoardCard: Association<Card, BoardColumn>
         User: Association<Card, User>
+        CardComments: Association<Card, CardComment>
     };
 
     static associate() {
         this.belongsTo(Board, {foreignKey: "boardId"})
         this.belongsTo(BoardColumn, {foreignKey: "boardColumnId"})
         this.belongsTo(User, {foreignKey: "userId"})
+        this.hasMany(CardComment, { foreignKey: "cardId"} )
     }
 }
 
