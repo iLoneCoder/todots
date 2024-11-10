@@ -1,0 +1,1 @@
+{"root":["./@types/express/index.d.ts","./src/index.ts","./src/controller/user.controller.ts","./src/db/config.ts","./src/db/index.ts","./src/db/sequelize.ts","./src/db/migrations/20241027193650-table.ts","./src/db/models/board.model.ts","./src/routes/user.routes.ts"],"version":"5.6.3"}
