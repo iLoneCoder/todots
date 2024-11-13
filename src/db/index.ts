@@ -40,5 +40,6 @@ export {
     Board,
     Card,
     BoardColumn,
-    User
+    User,
+    CardComment
 }

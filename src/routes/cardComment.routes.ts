@@ -1,6 +1,9 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
+import { verifyUser } from "../controller/auth.controller";
+import { createCardComment } from "../controller/cardComment.controller";
+
 const routes = express.Router({mergeParams: true})
 
-routes.post("/card-comment", (req: Request, res: Response, next: NextFunction) => {res.status(200).json({message: "create card comment"})})
+routes.post("/card-comment", verifyUser, createCardComment)
 
 export default routes
