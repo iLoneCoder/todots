@@ -4,6 +4,8 @@ import authRouter from "./routes/auth.routes"
 import boardRouter from "./routes/boards.routes"
 import cardRouter from "./routes/card.routes"
 import boardColumnRouter from "./routes/boardcolumn.routes"
+import AppError from "./utils/auth/appError"
+import { errorMiddleware } from "./controller/error.controller"
 
 export default function createApp() {
     dotenv.config()
@@ -18,20 +20,10 @@ export default function createApp() {
     app.use("/api/v1", boardColumnRouter)
     
     app.use("*", (req: Request, res: Response, next: NextFunction) => {
-        res.status(404).json({
-            status: "error",
-            message: "not found"
-        })
+        throw new AppError("Not found", 404)
     })
     
-    app.use((err: any, req: Request, res: Response, next: NextFunction)  => {
-        const errorStatusCode = 500
-        console.log(err)
-        res.status(errorStatusCode).json({
-            status: "error",
-            message: err.message
-        })
-    })
+    app.use(errorMiddleware)
 
     return app
 }
