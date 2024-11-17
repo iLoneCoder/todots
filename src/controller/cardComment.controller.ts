@@ -25,7 +25,7 @@ export async function createCardComment(req: Request, res: Response, next: NextF
         const newComment = await CardComment.create({
             comment,
             cardId,
-            userId: "asd"
+            userId: userId
         })
 
         res.status(201).json({
