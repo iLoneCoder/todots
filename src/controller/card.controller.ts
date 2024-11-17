@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Board, BoardColumn, Card, User } from "../db"
+import { Board, BoardColumn, Card, CardComment, User } from "../db"
 
 export async function createCard( req: Request, res: Response, next: NextFunction ) {
     try {
@@ -87,6 +87,9 @@ export async function getCard( req: Request, res: Response, next: NextFunction) 
                 boardId,
             },
             include: [
+                {
+                    model: CardComment
+                },
                 {
                     model: User
                 }
