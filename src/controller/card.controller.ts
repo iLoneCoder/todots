@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Board, BoardColumn, Card, CardComment, User } from "../db"
+import AppError from "../utils/auth/appError";
 
 export async function createCard( req: Request, res: Response, next: NextFunction ) {
     try {
@@ -158,6 +159,25 @@ export async function updateCard(req: Request, res: Response, next: NextFunction
         })
 
 
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function uploadCardAttachments(req: Request, res: Response, next: NextFunction) {
+    try {
+        console.log("called")
+        console.log(req.files)
+        const filePaths: string[] = []
+
+        for (let file of req.files as Express.Multer.File[]) {
+            filePaths.push(`/static/${file.filename.replace(/ /g, "%20")}`)
+        }
+
+        res.status(201).json({
+            status: "success",
+            data: filePaths
+        })
     } catch (error) {
         next(error)
     }
