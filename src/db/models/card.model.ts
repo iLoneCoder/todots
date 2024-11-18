@@ -4,6 +4,7 @@ import Board from "./board.model";
 import BoardColumn from "./board_column.model";
 import User from "./user.model";
 import CardComment from "./card_comment.model";
+import Attachment from "./attachment.model";
 
 class Card extends Model {
     declare id: number
@@ -15,12 +16,14 @@ class Card extends Model {
     declare BoardColumn?: BoardColumn
     declare User?: User
     declare CardComments?: CardComment[]
+    declare Attachments?: Attachment[]
 
     static associations: {
         Board: Association<Card, Board>;
         BoardCard: Association<Card, BoardColumn>
         User: Association<Card, User>
         CardComments: Association<Card, CardComment>
+        Attachments: Association<Card, Attachment>
     };
 
     static associate() {
@@ -28,6 +31,7 @@ class Card extends Model {
         this.belongsTo(BoardColumn, {foreignKey: "boardColumnId"})
         this.belongsTo(User, {foreignKey: "userId"})
         this.hasMany(CardComment, { foreignKey: "cardId"} )
+        this.hasMany(Attachment, { foreignKey: "cardId" })
     }
 }
 

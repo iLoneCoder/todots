@@ -3,6 +3,7 @@ import sequelize from "../sequelize"
 import Board from "./board.model"
 import Card from "./card.model"
 import CardComment from "./card_comment.model"
+import Attachment from "./attachment.model"
 
 class User extends Model {
     declare id: number
@@ -12,18 +13,20 @@ class User extends Model {
     declare Board?: Board[]
     declare Card?: Card[]
     declare CardComments: CardComment[]
-
+    declare Attachments: Attachment[]
     
     static associations: { 
         Board: Association<User, Board>
         Card: Association<User, Card>    
-        CarddComments: Association<User, CardComment>
+        CardComments: Association<User, CardComment>
+        Attachments: Association<User, Attachment>
     }
 
     static associate() {
         this.hasMany(Board, {foreignKey: "userId"})
         this.hasMany(Card, {foreignKey: "userId"})
         this.hasMany(CardComment, { foreignKey: "userId"})
+        this.hasMany(Attachment, { foreignKey: "userId" })
     }
 }
 
