@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { Board, BoardColumn, Card, CardComment, User } from "../db"
+import { Transaction } from "sequelize";
+import { Attachment, Board, BoardColumn, Card, CardComment, User } from "../db"
 import AppError from "../utils/auth/appError";
+import sequelize from "../db/sequelize";
 
 export async function createCard( req: Request, res: Response, next: NextFunction ) {
     try {
@@ -92,6 +94,9 @@ export async function getCard( req: Request, res: Response, next: NextFunction) 
                     model: CardComment
                 },
                 {
+                    model: Attachment
+                },
+                {
                     model: User
                 }
             ]
@@ -164,19 +169,59 @@ export async function updateCard(req: Request, res: Response, next: NextFunction
     }
 }
 
+export async function verifyInputBeforeUpload(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id: cardId } = req.params
+
+        if (!cardId) {
+            throw new AppError("cardId is required", 400)
+        }
+
+        const card = await Card.findByPk(cardId)
+
+        if (!card) {
+            throw new AppError("card not found", 404)
+        } 
+
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
+
 export async function uploadCardAttachments(req: Request, res: Response, next: NextFunction) {
     try {
-        console.log("called")
-        console.log(req.files)
-        const filePaths: string[] = []
+        const userId = req.user.id
+        const {id: cardId} = req.params
+        const filePaths: {
+            name: string,
+            cardId: number,
+            userId: number
+        }[] = []
 
         for (let file of req.files as Express.Multer.File[]) {
-            filePaths.push(`/static/${file.filename.replace(/ /g, "%20")}`)
+            filePaths.push({
+                name: `/static/${file.filename.replace(/ /g, "%20")}`,
+                cardId: +cardId,
+                userId: +userId
+            })
+        }
+        let results: Attachment[] = []
+
+        if (filePaths.length > 0) {
+            results = await sequelize.transaction(async (t:Transaction) => {
+                const attachments = await Attachment.bulkCreate(filePaths, {
+                    validate: true,
+                    transaction: t,
+                })
+
+                return attachments
+            })
         }
 
         res.status(201).json({
             status: "success",
-            data: filePaths
+            data: results
         })
     } catch (error) {
         next(error)
