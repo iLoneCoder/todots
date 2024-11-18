@@ -1,3 +1,5 @@
+import { promises as fs } from "fs"
+import path from "path"
 import { Request, Response, NextFunction } from "express";
 import { Transaction } from "sequelize";
 import { Attachment, Board, BoardColumn, Card, CardComment, User } from "../db"
@@ -223,6 +225,37 @@ export async function uploadCardAttachments(req: Request, res: Response, next: N
             status: "success",
             data: results
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function deleteCardAttachment(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id: attachmentId } = req.params
+        const basePath = path.join(__dirname, "../")
+        if (!attachmentId) {
+            throw new AppError("Attachment id is required", 400)
+        }
+
+        const attachment = await Attachment.findByPk(attachmentId)
+
+        if(!attachment) {
+            throw new AppError("File not found", 404)
+        }
+
+        await attachment.destroy()
+        
+        const files = await fs.readdir(path.join(basePath, "static"))
+        let fileExists = files.some((filename: string) => `/static/${filename}` === attachment.name)
+
+        if (fileExists) await fs.unlink(path.join(basePath, attachment.name))
+
+        res.status(201).json({
+            status: "success",
+            data: attachment
+        })
+        
     } catch (error) {
         next(error)
     }
