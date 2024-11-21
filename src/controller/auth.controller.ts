@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 import { User } from "../db"
 import { hashPassword, comparePasswords, generateToken } from "../utils/auth/auth"
 import { Op } from "sequelize"
+import apiCallLimiter from "../utils/auth/apiCallLimiter"
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
     try {
@@ -138,7 +139,7 @@ export async function userStatus(req: Request, res: Response, next: NextFunction
 }
 
 export async function verifyUser(req: Request, res: Response, next: NextFunction) {
-    try {
+    try {       
         const tokenWithBearer = req.headers.authorization
         if (!tokenWithBearer?.includes("Bearer")) {
             throw new Error("Not authorized")
@@ -154,6 +155,8 @@ export async function verifyUser(req: Request, res: Response, next: NextFunction
         const secret = process.env.JWT_SECRET || "secret"
         const userDetails = jwt.verify(token, secret) as UserDetailsType
 
+        await apiCallLimiter(userDetails.email)
+        
         const user = await User.findOne({
             where: {
                 email: userDetails.email,
@@ -175,9 +178,10 @@ export async function verifyUser(req: Request, res: Response, next: NextFunction
         type SafeUser = Omit<User, "password">
 
         req.user = user as SafeUser
-
+        
         next()
     } catch (error) {
+        console.log("i catched the error")
         next(error)
     }
 }
