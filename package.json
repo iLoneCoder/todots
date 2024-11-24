@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=development jest",
+    "test": "cross-env NODE_ENV=development jest --testPathPattern=src/__test__",
     "test:e2e": "cross-env NODE_ENV=test jest --testPathPattern=src/e2e",
     "build": "tsc --build",
     "start": "node ./dist/index",

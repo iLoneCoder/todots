@@ -4,25 +4,26 @@ import { User } from "../db"
 import { hashPassword, comparePasswords, generateToken } from "../utils/auth/auth"
 import { Op } from "sequelize"
 import apiCallLimiter from "../utils/auth/apiCallLimiter"
+import AppError from "../utils/auth/appError"
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, password, confirmPassword } = req.body
 
         if (!email) {
-            throw new Error("provide email")
+            throw new AppError("provide email", 400)
         }
 
         if (!password) {
-            throw new Error("provide password")
+            throw new AppError("provide password", 400)
         }
 
         if (!confirmPassword) {
-            throw new Error("provide confirmPassword")
+            throw new AppError("provide confirmPassword", 400)
         }
 
         if(password !== confirmPassword) {
-            throw new Error("password and confirmPassword must match")
+            throw new AppError("password and confirmPassword must match", 400)
         }
 
         const hashedPassword = await hashPassword(password)

@@ -6,7 +6,6 @@ class AppError extends Error {
         public readonly isOperational = true
     ) {
         super(message)
-
         Error.captureStackTrace(this)
     }
 }
