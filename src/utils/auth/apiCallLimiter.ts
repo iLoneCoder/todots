@@ -13,7 +13,7 @@ async function apiCallLimiter(email:string) {
     const callsQuantity = callsStr && !isNaN(+callsStr) ? parseInt(callsStr) : 0
     await client.incr(email)
 
-    console.log({callsQuantity})
+    // console.log({callsQuantity})
     if (callsQuantity > 1000000) {
         throw new AppError("Api call limit is reached", 403)
     }      

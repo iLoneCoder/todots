@@ -5,6 +5,7 @@ import { Transaction } from "sequelize";
 import { Attachment, Board, BoardColumn, Card, CardComment, User } from "../db"
 import AppError from "../utils/auth/appError";
 import sequelize from "../db/sequelize";
+import { deleteFiles } from "../commands/attachments";
 
 export async function createCard( req: Request, res: Response, next: NextFunction ) {
     try {
@@ -200,7 +201,7 @@ export async function uploadCardAttachments(req: Request, res: Response, next: N
             cardId: number,
             userId: number
         }[] = []
-
+        console.log(req.files)
         for (let file of req.files as Express.Multer.File[]) {
             filePaths.push({
                 name: `/static/${file.filename.replace(/ /g, "%20")}`,
@@ -256,6 +257,35 @@ export async function deleteCardAttachment(req: Request, res: Response, next: Ne
             data: attachment
         })
         
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function deleteCard(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { cardId } = req.params
+
+        const card = await Card.findByPk(cardId, {
+            include:[{
+                    model: Attachment
+                }
+            ]
+        })
+        
+        if (!card) {
+            throw new AppError("Card not found", 404)
+        }
+        console.log(card.Attachments)
+        const attachmentNames = card.Attachments?.map(item => item.name) || []
+
+        await card.destroy()
+
+        if (attachmentNames?.length > 0) {
+            await deleteFiles(attachmentNames)
+        }
+
+        res.status(204).json()
     } catch (error) {
         next(error)
     }
