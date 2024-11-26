@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+  pg:
+    container_name: todots_pg
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: 1122
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
   redis:
     image: redis:latest
     restart: always
@@ -10,5 +20,7 @@ services:
     volumes:
       - redis:/data
 volumes:
+  pgdata:
+    driver: local
   redis:
     driver: local

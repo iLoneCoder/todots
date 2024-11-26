@@ -4,7 +4,7 @@ import * as child_process from 'child_process'
 const { Client } = pg
 
 dotenv.config()
-const port = process.env.DB_TEST_PORT && !isNaN(+process.env.DB_TEST_PORT) ? +process.env.DB_TEST_PORT : 5432
+const port = process.env.DB_TEST_PORT && !isNaN(+process.env.DB_TEST_PORT) ? +process.env.DB_TEST_PORT : 5433
 const testDbName = "todo_test"
 
 export async function db_config() {

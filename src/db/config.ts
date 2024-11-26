@@ -1,6 +1,8 @@
 import { Dialect } from "sequelize"
+import * as dotenv from "dotenv"
+dotenv.config()
 
-const PORT = process.env.DB_PORT && !isNaN(+process.env.DB_PORT) ? parseInt(process.env.DB_PORT) : 5432
+const PORT = process.env.DB_PORT && !isNaN(+process.env.DB_PORT) ? parseInt(process.env.DB_PORT) : 5433
 
 const config = {
     development: {
