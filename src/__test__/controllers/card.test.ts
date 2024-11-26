@@ -22,7 +22,6 @@ const next: NextFunction = jest.fn();
 describe("gets card", () => {
     const mockRequest = {
         params: {
-            boardId: 2,
             cardId: 4
         }
     } as unknown as Request
@@ -35,7 +34,6 @@ describe("gets card", () => {
         } as unknown as Card)
         
         await getCard(mockRequest, mockResponse, next)
-        expect(mockRequest.params.boardId).not.toBeFalsy()
         expect(mockRequest.params.cardId).not.toBeFalsy()
         expect(findOneMethod).toHaveBeenCalled()
         expect(mockResponse.status).toHaveBeenCalledWith(200)
@@ -49,24 +47,9 @@ describe("gets card", () => {
         })
     })
 
-    it("should catch error when boardId is falsy", async () => {
-        const mockRequest = {
-            params: {
-                boardId: null,
-                cardId: 2
-            } 
-        } as unknown as Request
-    
-        await getCard(mockRequest, mockResponse, next);
-        expect(mockRequest.params.boardId).toBeFalsy()
-        // expect(async () => await getCard(mockRequest, mockResponse, next)).rejects.toThrow("boardId is required")
-        expect(next).toHaveBeenCalledWith(new Error("boardId is required"));
-    })
-
     it("should catch error when cardId is falsey", async () => {
         const mockRequest = {
             params: {
-                boardId: 3,
                 cardId: null
             }
         } as unknown as Request

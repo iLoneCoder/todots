@@ -59,7 +59,16 @@ export async function createCard( req: Request, res: Response, next: NextFunctio
 
 export async function listCards( req: Request, res: Response, next: NextFunction ) {
     try {
+        const { boardId } = req.params
+
+        if (!boardId) {
+            throw new AppError("boardId is required", 400)
+        }
+
         const cards = await Card.findAll({
+            where: {
+                boardId
+            },
             include: {
                 model: Board,
                 attributes: ["name"]
@@ -77,11 +86,7 @@ export async function listCards( req: Request, res: Response, next: NextFunction
 
 export async function getCard( req: Request, res: Response, next: NextFunction) {
     try {
-        const { boardId, cardId } = req.params
-
-        if (!boardId) {
-            throw new Error("boardId is required")
-        }
+        const { cardId } = req.params
 
         if (!cardId) {
             throw new Error("cardId is required")
@@ -89,8 +94,7 @@ export async function getCard( req: Request, res: Response, next: NextFunction) 
 
         const card = await Card.findOne({
             where: {
-                id: cardId,
-                boardId,
+                id: cardId
             },
             include: [
                 {
