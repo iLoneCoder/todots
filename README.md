@@ -2,10 +2,11 @@
 
 This is a Kanban application with only the backend, where users can register, create boards, add buckets to boards, create cards in buckets, and add comments and attachments to cards. 
 
+[API documentation](https://documenter.getpostman.com/view/29627772/2sAYBXBr2d)
+
 # Technology
 This app is built in Node.js with TypeScript. PostgreSQL is used as the database with Sequelize (including migrations). Redis is used to limit the number of requests (the limit is ridiculously large :D). Both Redis and PostgreSQL are installed via Docker Compose, which creates volumes to preserve data when the containers are stopped.
 
-[API documentation](https://documenter.getpostman.com/view/29627772/2sAYBXBr2d)
 
 # Usage
 After pulling project run commands
